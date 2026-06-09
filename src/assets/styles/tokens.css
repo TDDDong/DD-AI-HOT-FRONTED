@@ -1,0 +1,18 @@
+:root {
+  --bg: oklch(98% 0.004 240);
+  --surface: oklch(100% 0 0);
+  --fg: oklch(20% 0.02 240);
+  --muted: oklch(50% 0.018 240);
+  --border: oklch(90% 0.006 240);
+  --accent: oklch(56% 0.12 170);
+  --accent-soft: oklch(56% 0.12 170 / 0.08);
+  --accent-glow: oklch(56% 0.12 170 / 0.15);
+
+  --font-display: 'Georgia', 'Iowan Old Style', 'Times New Roman', serif;
+  --font-body: -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, sans-serif;
+
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-xl: 32px;
+}
