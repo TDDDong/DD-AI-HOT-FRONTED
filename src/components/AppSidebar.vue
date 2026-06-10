@@ -1,26 +1,29 @@
 <script setup lang="ts">
+import { computed } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import ModuleIcon from './ModuleIcon.vue'
 import { availableModules } from '../data/appModules'
-import type { AppModuleId, AppPage } from '../types/app'
+import type { AppModule } from '../types/app'
 
-defineProps<{
-  activePage: AppPage
-}>()
+const route = useRoute()
+const router = useRouter()
 
-const emit = defineEmits<{
-  navigate: [page: AppPage]
-}>()
+const activeRouteName = computed(() => route.name)
 
-function navigateModule(moduleId: AppModuleId): void {
-  if (moduleId === 'dailyQuote') {
-    emit('navigate', moduleId)
+function navigateHome(): void {
+  router.push({ name: 'home' })
+}
+
+function navigateModule(module: AppModule): void {
+  if (module.route) {
+    router.push(module.route)
   }
 }
 </script>
 
 <template>
   <aside class="sidebar">
-    <button class="sidebar-brand" type="button" @click="emit('navigate', 'home')">
+    <button class="sidebar-brand" type="button" @click="navigateHome">
       <span class="sidebar-dot"></span>
       DARVIS
     </button>
@@ -28,9 +31,9 @@ function navigateModule(moduleId: AppModuleId): void {
     <nav class="sidebar-nav" aria-label="主导航">
       <button
         class="sidebar-link"
-        :class="{ active: activePage === 'home' }"
+        :class="{ active: activeRouteName === 'home' }"
         type="button"
-        @click="emit('navigate', 'home')"
+        @click="navigateHome"
       >
         <span class="nav-icon">
           <ModuleIcon name="dashboard" />
@@ -44,9 +47,9 @@ function navigateModule(moduleId: AppModuleId): void {
         v-for="module in availableModules"
         :key="module.id"
         class="sidebar-link"
-        :class="{ active: activePage === module.id }"
+        :class="{ active: activeRouteName === module.id }"
         type="button"
-        @click="navigateModule(module.id)"
+        @click="navigateModule(module)"
       >
         <span class="nav-icon">
           <ModuleIcon :name="module.icon" />

@@ -1,25 +1,20 @@
 <script setup lang="ts">
+import { RouterLink } from 'vue-router'
 import ModuleIcon from './ModuleIcon.vue'
 import type { AppModule } from '../types/app'
 
 defineProps<{
   module: AppModule
 }>()
-
-const emit = defineEmits<{
-  open: [module: AppModule]
-}>()
 </script>
 
 <template>
-  <button
+  <RouterLink
+    v-if="module.status === 'active' && module.route"
+    :to="module.route"
     class="module-card"
-    :class="{ disabled: module.status !== 'active' }"
-    type="button"
-    :disabled="module.status !== 'active'"
-    @click="emit('open', module)"
   >
-    <div class="module-icon" :class="module.status === 'active' ? 'quote' : 'placeholder'">
+    <div class="module-icon quote">
       <ModuleIcon :name="module.icon" />
     </div>
 
@@ -27,7 +22,7 @@ const emit = defineEmits<{
     <p>{{ module.description }}</p>
 
     <div class="module-actions">
-      <span v-if="module.status === 'active'" class="module-btn">
+      <span class="module-btn">
         进入模块
         <svg
           viewBox="0 0 24 24"
@@ -40,9 +35,21 @@ const emit = defineEmits<{
           <polyline points="9 18 15 12 9 6" />
         </svg>
       </span>
-      <span v-else class="coming-badge">即将上线</span>
     </div>
-  </button>
+  </RouterLink>
+
+  <div v-else class="module-card disabled">
+    <div class="module-icon placeholder">
+      <ModuleIcon :name="module.icon" />
+    </div>
+
+    <h3>{{ module.title }}</h3>
+    <p>{{ module.description }}</p>
+
+    <div class="module-actions">
+      <span class="coming-badge">即将上线</span>
+    </div>
+  </div>
 </template>
 
 <style scoped>
@@ -81,7 +88,6 @@ const emit = defineEmits<{
 
 .module-card.disabled {
   cursor: default;
-  opacity: 1;
 }
 
 .module-card.disabled:hover {
@@ -166,12 +172,8 @@ const emit = defineEmits<{
   text-decoration: none;
 }
 
-.module-btn:hover {
+.module-card:hover .module-btn {
   background: oklch(56% 0.12 170 / 0.14);
-}
-
-.module-btn:active {
-  transform: scale(0.97);
 }
 
 .module-btn svg {

@@ -1,21 +1,10 @@
 <script setup lang="ts">
 import ModuleCard from '../components/ModuleCard.vue'
 import { appModules } from '../data/appModules'
-import type { AppModule } from '../types/app'
-
-const emit = defineEmits<{
-  openDailyQuote: []
-}>()
-
-function openModule(module: AppModule): void {
-  if (module.id === 'dailyQuote') {
-    emit('openDailyQuote')
-  }
-}
 </script>
 
 <template>
-  <div class="home-view">
+  <div class="page-shell home-view">
     <header class="page-header">
       <h1>DARVIS</h1>
       <p>你的个人 AI 助理。选择一个模块开始使用，更多模块即将上线。</p>
@@ -23,12 +12,7 @@ function openModule(module: AppModule): void {
 
     <div class="section-title">可用模块</div>
     <div class="module-grid">
-      <ModuleCard
-        v-for="module in appModules"
-        :key="module.id"
-        :module="module"
-        @open="openModule"
-      />
+      <ModuleCard v-for="module in appModules" :key="module.id" :module="module" />
     </div>
   </div>
 </template>

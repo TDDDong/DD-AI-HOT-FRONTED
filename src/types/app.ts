@@ -1,4 +1,4 @@
-export type AppPage = 'home' | 'dailyQuote'
+export type AppRouteName = 'home' | 'dailyQuote'
 
 export type AppModuleId = 'dailyQuote' | 'notes' | 'focusTimer' | 'dailyReflection'
 
@@ -10,4 +10,5 @@ export interface AppModule {
   description: string
   icon: ModuleIconName
   status: 'active' | 'comingSoon'
+  route?: string
 }

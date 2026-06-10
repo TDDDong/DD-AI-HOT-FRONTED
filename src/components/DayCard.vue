@@ -1,45 +1,59 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { formatDate } from '../composables/useDate'
 import type { HistoryQuoteItem } from '../types/quote'
 
-defineProps<{
+const props = defineProps<{
   item: HistoryQuoteItem
 }>()
 
 const isExpanded = ref(false)
 
+const hasQuote = computed(() => props.item.quote !== null)
+
 function toggle(): void {
+  if (!hasQuote.value) return
   isExpanded.value = !isExpanded.value
 }
 </script>
 
 <template>
-  <div class="day-card" :class="{ expanded: isExpanded }" @click="toggle">
+  <div
+    class="day-card"
+    :class="{ expanded: isExpanded, empty: !hasQuote }"
+    @click="toggle"
+  >
     <div class="day-card-header">
       <span class="day-card-date">{{ formatDate(item.date) }}</span>
       <span v-if="item.isToday" class="day-card-badge">今日</span>
     </div>
-    <p class="day-card-en">{{ item.quote.en }}</p>
-    <p class="day-card-author">— {{ item.quote.author }}</p>
-    <div class="card-trans-wrap" :class="{ open: isExpanded }">
-      <div class="card-trans-inner">
-        <p class="card-trans-zh">{{ item.quote.zh }}</p>
+
+    <template v-if="hasQuote">
+      <p class="day-card-en">{{ item.quote!.en }}</p>
+      <p class="day-card-author">— {{ item.quote!.author }}</p>
+      <div class="card-trans-wrap" :class="{ open: isExpanded }">
+        <div class="card-trans-inner">
+          <p class="card-trans-zh">{{ item.quote!.zh }}</p>
+        </div>
       </div>
-    </div>
-    <div class="card-hint">
-      <span>{{ isExpanded ? '收起翻译' : '查看翻译' }}</span>
-      <svg
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2.5"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-      >
-        <polyline points="6 9 12 15 18 9" />
-      </svg>
-    </div>
+      <div class="card-hint">
+        <span>{{ isExpanded ? '收起翻译' : '查看翻译' }}</span>
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <polyline points="6 9 12 15 18 9" />
+        </svg>
+      </div>
+    </template>
+
+    <template v-else>
+      <p class="day-card-empty">当日暂无例句</p>
+    </template>
   </div>
 </template>
 
@@ -59,15 +73,19 @@ function toggle(): void {
   overflow: hidden;
 }
 
-.day-card:hover {
+.day-card:hover:not(.empty) {
   transform: translateY(-2px);
   box-shadow:
     0 8px 28px oklch(0 0 0 / 0.07),
     0 2px 4px oklch(0 0 0 / 0.03);
 }
 
-.day-card:active {
+.day-card:active:not(.empty) {
   transform: scale(0.985);
+}
+
+.day-card.empty {
+  cursor: default;
 }
 
 .day-card::before {
@@ -125,6 +143,12 @@ function toggle(): void {
   color: var(--muted);
   font-weight: 500;
   letter-spacing: 0.02em;
+}
+
+.day-card-empty {
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.5;
 }
 
 .card-trans-wrap {

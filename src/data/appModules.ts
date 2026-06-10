@@ -7,6 +7,7 @@ export const appModules: AppModule[] = [
     description: '每日推荐一句精选英语短句，提供中文翻译，支持浏览历史日推。为日常自我提升而设计。',
     icon: 'book',
     status: 'active',
+    route: '/daily-quote',
   },
   {
     id: 'notes',

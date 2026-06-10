@@ -1,48 +1,52 @@
-import { quotesMock } from '../data/quotes.mock'
-import { dayOfYear } from '../composables/useDate'
+import { getDailySentences, persistRandomWord } from './englishWord'
+import { formatUtcDate, parseApiDate, utcDateDaysAgo } from '../composables/useDate'
+import type { DailyHotSentencesDto } from '../types/englishWord'
 import type { HistoryQuoteItem, Quote } from '../types/quote'
 
-const STORAGE_KEY = 'dq:todayIdx'
+export function mapDailyToQuotes(dto: DailyHotSentencesDto): Quote[] {
+  const quotes: Quote[] = []
 
-function getTodayIdx(): number {
-  const today = new Date()
-  const fallback = dayOfYear(today) % quotesMock.length
-  const raw = localStorage.getItem(STORAGE_KEY)
-  if (raw === null) return fallback
+  for (const word of dto.words) {
+    for (const sentence of word.sentences) {
+      quotes.push({
+        en: sentence.content,
+        zh: sentence.cn,
+        author: word.word,
+      })
+    }
+  }
 
-  const parsed = parseInt(raw, 10)
-  if (isNaN(parsed) || parsed < 0) return fallback
-
-  return parsed % quotesMock.length
+  return quotes
 }
 
-export async function fetchTodayQuote(): Promise<Quote> {
-  await new Promise((resolve) => setTimeout(resolve, 0))
-  return quotesMock[getTodayIdx()]
+export function pickFirstQuote(dto: DailyHotSentencesDto): Quote | null {
+  return mapDailyToQuotes(dto)[0] ?? null
+}
+
+/** 仅查询 UTC 当天已有例句，不触发入库 */
+export async function fetchTodaySentences(): Promise<Quote[]> {
+  const dto = await getDailySentences()
+  return mapDailyToQuotes(dto)
+}
+
+/** 拉取随机单词入库后，再查询当天例句 */
+export async function fetchTodaySentencesAfterPersist(): Promise<Quote[]> {
+  await persistRandomWord()
+  const dto = await getDailySentences()
+  return mapDailyToQuotes(dto)
 }
 
 export async function fetchHistoryQuotes(days: number): Promise<HistoryQuoteItem[]> {
-  await new Promise((resolve) => setTimeout(resolve, 0))
+  const requests = Array.from({ length: days }, async (_, offset) => {
+    const dateStr = formatUtcDate(utcDateDaysAgo(offset))
+    const dto = await getDailySentences(dateStr)
 
-  const today = new Date()
-  const todayIdx = getTodayIdx()
-  const items: HistoryQuoteItem[] = []
+    return {
+      date: parseApiDate(dto.date),
+      isToday: offset === 0,
+      quote: pickFirstQuote(dto),
+    }
+  })
 
-  for (let d = 0; d < days; d++) {
-    const date = new Date(today)
-    date.setDate(date.getDate() - d)
-    const isToday = d === 0
-
-    const quote = isToday
-      ? quotesMock[todayIdx % quotesMock.length]
-      : quotesMock[(date.getFullYear() * 1000 + dayOfYear(date)) % quotesMock.length]
-
-    items.push({ date, isToday, quote })
-  }
-
-  return items
-}
-
-export function getQuotesPool(): Quote[] {
-  return quotesMock
+  return Promise.all(requests)
 }
