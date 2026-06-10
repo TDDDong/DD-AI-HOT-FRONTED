@@ -12,7 +12,7 @@ const emit = defineEmits<{
   <header class="topbar">
     <div class="topbar-brand">
       <span class="topbar-dot"></span>
-      每日精选
+      每日短句精选
     </div>
     <nav class="topbar-nav" role="tablist">
       <button

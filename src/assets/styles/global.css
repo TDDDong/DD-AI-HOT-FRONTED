@@ -16,20 +16,41 @@ body {
   min-height: 100vh;
 }
 
-.app {
-  max-width: 960px;
-  margin: 0 auto;
-  padding: 0 32px;
+#app {
   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
 }
 
-.main {
+.app {
+  min-height: 100vh;
+  display: flex;
+}
+
+.app-main {
+  flex: 1;
+  min-width: 0;
+  max-width: 1100px;
+  padding: 48px 56px 80px 56px;
+}
+
+.app-main.quote-module {
+  max-width: none;
+  padding: 0;
+}
+
+.quote-main {
   flex: 1;
   display: flex;
   flex-direction: column;
   padding: 8px 0 48px 0;
+}
+
+.daily-quote-shell {
+  max-width: 960px;
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: 0 32px;
+  display: flex;
+  flex-direction: column;
 }
 
 .view {
@@ -52,7 +73,14 @@ body {
 }
 
 @media (max-width: 720px) {
-  .app {
+  .daily-quote-shell {
     padding: 0 16px;
+  }
+}
+
+@media (max-width: 860px) {
+  .app-main {
+    max-width: none;
+    padding: 32px 20px 60px 20px;
   }
 }

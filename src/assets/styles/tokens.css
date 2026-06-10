@@ -6,7 +6,7 @@
   --border: oklch(90% 0.006 240);
   --accent: oklch(56% 0.12 170);
   --accent-soft: oklch(56% 0.12 170 / 0.08);
-  --accent-glow: oklch(56% 0.12 170 / 0.15);
+  --accent-glow: oklch(56% 0.12 170 / 0.18);
 
   --font-display: 'Georgia', 'Iowan Old Style', 'Times New Roman', serif;
   --font-body: -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, sans-serif;

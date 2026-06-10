@@ -1,15 +1,32 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
+import AppSidebar from './components/AppSidebar.vue'
 import AppTopbar from './components/AppTopbar.vue'
 import { useQuotes } from './composables/useQuotes'
+import type { AppPage } from './types/app'
 import HistoryView from './views/HistoryView.vue'
+import HomeView from './views/HomeView.vue'
 import TodayView from './views/TodayView.vue'
 
-const activeView = ref<'today' | 'history'>('today')
+type QuoteView = 'today' | 'history'
+
+const activePage = ref<AppPage>('home')
+const activeQuoteView = ref<QuoteView>('today')
 const { loadTodayQuote, loadHistory } = useQuotes()
 
-async function switchView(view: 'today' | 'history'): Promise<void> {
-  activeView.value = view
+async function navigate(page: AppPage): Promise<void> {
+  activePage.value = page
+
+  if (page === 'dailyQuote') {
+    await loadTodayQuote()
+    if (activeQuoteView.value === 'history') {
+      await loadHistory(7)
+    }
+  }
+}
+
+async function switchQuoteView(view: QuoteView): Promise<void> {
+  activeQuoteView.value = view
   if (view === 'history') {
     await loadHistory(7)
   }
@@ -22,18 +39,26 @@ onMounted(() => {
 
 <template>
   <div class="app">
-    <AppTopbar :active-view="activeView" @switch-view="switchView" />
+    <AppSidebar :active-page="activePage" @navigate="navigate" />
 
-    <main class="main">
-      <section class="view" :class="{ active: activeView === 'today' }">
-        <TodayView @go-history="switchView('history')" />
-      </section>
+    <main class="app-main" :class="{ 'quote-module': activePage === 'dailyQuote' }">
+      <HomeView v-if="activePage === 'home'" @open-daily-quote="navigate('dailyQuote')" />
 
-      <section class="view" :class="{ active: activeView === 'history' }">
-        <HistoryView />
-      </section>
+      <div v-else class="daily-quote-shell">
+        <AppTopbar :active-view="activeQuoteView" @switch-view="switchQuoteView" />
+
+        <div class="quote-main">
+          <section class="view" :class="{ active: activeQuoteView === 'today' }">
+            <TodayView @go-history="switchQuoteView('history')" />
+          </section>
+
+          <section class="view" :class="{ active: activeQuoteView === 'history' }">
+            <HistoryView />
+          </section>
+        </div>
+
+        <footer class="app-footer">Daily Quote · 每日精选</footer>
+      </div>
     </main>
-
-    <footer class="app-footer">Daily Quote · 每日精选</footer>
   </div>
 </template>
