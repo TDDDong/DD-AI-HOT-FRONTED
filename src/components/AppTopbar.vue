@@ -1,110 +1,338 @@
 <script setup lang="ts">
+
+import { RouterLink } from 'vue-router'
+
+
+
 defineProps<{
+
   activeView: 'today' | 'history'
+
+  planetName?: string
+
 }>()
+
+
 
 const emit = defineEmits<{
+
   switchView: [view: 'today' | 'history']
+
 }>()
+
 </script>
 
+
+
 <template>
+
   <header class="topbar">
-    <div class="topbar-brand">
-      <span class="topbar-dot"></span>
-      每日短句精选
+
+    <div class="topbar-left">
+
+      <RouterLink class="topbar-brand" :to="{ name: 'home' }">DARVIS</RouterLink>
+
     </div>
-    <nav class="topbar-nav" role="tablist">
-      <button
-        role="tab"
-        :class="{ active: activeView === 'today' }"
-        @click="emit('switchView', 'today')"
-      >
-        今日推荐
-      </button>
-      <button
-        role="tab"
-        :class="{ active: activeView === 'history' }"
-        @click="emit('switchView', 'history')"
-      >
-        历史日推
-      </button>
-    </nav>
+
+
+
+    <div class="topbar-center">
+
+      <h1 class="topbar-title">{{ planetName ?? '土星 · Saturn' }}</h1>
+
+      <nav class="topbar-nav" role="tablist">
+
+        <button
+
+          role="tab"
+
+          :class="{ active: activeView === 'today' }"
+
+          @click="emit('switchView', 'today')"
+
+        >
+
+          今日推荐
+
+        </button>
+
+        <button
+
+          role="tab"
+
+          :class="{ active: activeView === 'history' }"
+
+          @click="emit('switchView', 'history')"
+
+        >
+
+          历史日推
+
+        </button>
+
+      </nav>
+
+    </div>
+
+
+
+    <div class="topbar-right">
+
+      <div class="topbar-actions" aria-hidden="true">
+
+        <span class="action-dot" />
+
+        <span class="action-dot" />
+
+        <span class="action-avatar">Y</span>
+
+      </div>
+
+    </div>
+
   </header>
+
 </template>
 
+
+
 <style scoped>
+
 .topbar {
-  display: flex;
+
+  display: grid;
+
+  grid-template-columns: 1fr auto 1fr;
+
   align-items: center;
-  justify-content: space-between;
-  padding: 28px 0 20px 0;
-  flex-shrink: 0;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  background: oklch(98% 0.004 240 / 0.85);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+
+  width: 100%;
+
+  padding: 28px clamp(20px, 4vw, 48px) 24px;
+
 }
+
+
+
+.topbar-left {
+
+  justify-self: start;
+
+  min-width: 0;
+
+}
+
+
+
+.topbar-center {
+
+  justify-self: center;
+
+  text-align: center;
+
+  min-width: 0;
+
+}
+
+
+
+.topbar-right {
+
+  justify-self: end;
+
+  min-width: 0;
+
+}
+
+
 
 .topbar-brand {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 18px;
-  font-weight: 700;
-  letter-spacing: -0.01em;
-  color: var(--fg);
+
+  font-size: 15px;
+
+  font-weight: 600;
+
+  letter-spacing: 0.18em;
+
+  color: rgba(255, 255, 255, 0.92);
+
+  text-decoration: none;
+
+  transition: color 0.2s ease;
+
+  white-space: nowrap;
+
 }
 
-.topbar-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: var(--accent);
-  box-shadow: 0 0 12px var(--accent-glow);
+
+
+.topbar-brand:hover {
+
+  color: #fff;
+
 }
+
+
+
+.topbar-title {
+
+  font-size: clamp(18px, 2.5vw, 22px);
+
+  font-weight: 600;
+
+  letter-spacing: 0.06em;
+
+  color: #fff;
+
+  margin-bottom: 16px;
+
+}
+
+
 
 .topbar-nav {
-  display: flex;
-  gap: 4px;
-  background: var(--surface);
-  border-radius: 999px;
-  padding: 4px;
-  box-shadow: 0 1px 4px oklch(0 0 0 / 0.04);
-  border: 1px solid var(--border);
+
+  display: inline-flex;
+
+  gap: 28px;
+
 }
+
+
 
 .topbar-nav button {
-  padding: 8px 20px;
-  border-radius: 999px;
+
+  padding: 0 0 8px;
+
   border: none;
+
+  border-bottom: 2px solid transparent;
+
   background: transparent;
+
   cursor: pointer;
+
   font-family: var(--font-body);
+
   font-size: 14px;
+
   font-weight: 500;
-  color: var(--muted);
-  transition: all 0.25s cubic-bezier(0.22, 0.61, 0.36, 1);
+
+  color: rgba(210, 218, 230, 0.55);
+
+  transition: color 0.25s cubic-bezier(0.32, 0.72, 0, 1);
+
   white-space: nowrap;
+
 }
+
+
 
 .topbar-nav button.active {
-  background: var(--fg);
+
   color: #fff;
-  box-shadow: 0 2px 8px oklch(0 0 0 / 0.12);
+
+  border-bottom-color: #c4885a;
+
 }
+
+
 
 .topbar-nav button:hover:not(.active) {
-  color: var(--fg);
+
+  color: rgba(255, 255, 255, 0.8);
+
 }
 
-@media (max-width: 720px) {
-  .topbar {
-    flex-direction: column;
-    gap: 12px;
-    align-items: flex-start;
-  }
+
+
+.topbar-actions {
+
+  display: flex;
+
+  justify-content: flex-end;
+
+  align-items: center;
+
+  gap: 12px;
+
 }
+
+
+
+.action-dot {
+
+  width: 18px;
+
+  height: 18px;
+
+  border-radius: 4px;
+
+  border: 1px solid rgba(255, 255, 255, 0.15);
+
+  opacity: 0.5;
+
+}
+
+
+
+.action-avatar {
+
+  width: 30px;
+
+  height: 30px;
+
+  border-radius: 50%;
+
+  background: linear-gradient(135deg, #c4885a, #8a6848);
+
+  color: #0a0e18;
+
+  font-size: 12px;
+
+  font-weight: 700;
+
+  display: grid;
+
+  place-items: center;
+
+}
+
+
+
+@media (max-width: 720px) {
+
+  .topbar {
+
+    grid-template-columns: 1fr;
+
+    gap: 16px;
+
+    padding-top: 20px;
+
+  }
+
+
+
+  .topbar-left,
+
+  .topbar-center,
+
+  .topbar-right {
+
+    justify-self: center;
+
+  }
+
+
+
+  .topbar-right {
+
+    display: none;
+
+  }
+
+}
+
 </style>
+

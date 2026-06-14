@@ -39,29 +39,31 @@ watch(
 </script>
 
 <template>
-  <article ref="cardRef" class="quote-card">
+  <article ref="cardRef" class="quote-card glass-panel">
     <div class="quote-mark">&ldquo;</div>
     <div class="quote-body">
       <p class="quote-en">{{ quote.en }}</p>
-      <p class="quote-author">— {{ quote.author }}</p>
+      <p class="quote-author">- {{ quote.author }}</p>
 
-      <button
-        class="translate-btn"
-        :class="{ open: isTranslationOpen }"
-        @click="toggleTranslation"
-      >
-        <span>{{ isTranslationOpen ? '收起翻译' : '查看翻译' }}</span>
-        <svg
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2.5"
-          stroke-linecap="round"
-          stroke-linejoin="round"
+      <div class="quote-actions">
+        <button
+          class="translate-btn"
+          :class="{ open: isTranslationOpen }"
+          @click="toggleTranslation"
         >
-          <polyline points="6 9 12 15 18 9" />
-        </svg>
-      </button>
+          <span>{{ isTranslationOpen ? '收起中文' : '点击查看中文' }}</span>
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <polyline points="9 18 15 12 9 6" />
+          </svg>
+        </button>
+      </div>
 
       <div class="translation-wrap" :class="{ open: isTranslationOpen }">
         <div class="translation-inner">
@@ -75,37 +77,16 @@ watch(
 <style scoped>
 .quote-card {
   width: 100%;
-  max-width: 720px;
-  background: var(--surface);
-  border-radius: var(--radius-xl);
-  padding: 56px 64px;
+  max-width: 820px;
+  border-radius: 20px;
+  padding: 48px 56px 40px;
   position: relative;
-  box-shadow:
-    0 4px 32px oklch(0 0 0 / 0.05),
-    0 1px 2px oklch(0 0 0 / 0.03);
-  transition: transform 0.4s cubic-bezier(0.22, 0.61, 0.36, 1);
+  transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1);
   overflow: hidden;
 }
 
-.quote-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, var(--accent), oklch(68% 0.12 140), oklch(56% 0.12 170));
-}
-
 .quote-mark {
-  position: absolute;
-  top: 36px;
-  left: 40px;
-  font-family: var(--font-display);
-  font-size: 120px;
-  line-height: 1;
-  color: var(--accent-soft);
-  pointer-events: none;
+  display: none;
 }
 
 .quote-body {
@@ -115,21 +96,22 @@ watch(
 
 .quote-en {
   font-family: var(--font-display);
-  font-size: clamp(24px, 3.5vw, 36px);
-  line-height: 1.45;
-  letter-spacing: -0.015em;
+  font-size: clamp(20px, 2.8vw, 28px);
+  line-height: 1.55;
+  letter-spacing: 0.01em;
   font-weight: 400;
-  color: var(--fg);
+  font-style: italic;
+  color: rgba(255, 255, 255, 0.94);
   text-wrap: pretty;
-  margin-bottom: 16px;
+  margin-bottom: 20px;
 }
 
 .quote-author {
-  font-size: 15px;
-  color: var(--muted);
-  font-weight: 500;
-  letter-spacing: 0.02em;
-  margin-bottom: 32px;
+  font-size: 14px;
+  color: rgba(210, 218, 230, 0.65);
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  margin-bottom: 36px;
 }
 
 .translation-wrap {
@@ -147,9 +129,9 @@ watch(
 }
 
 .translation-zh {
-  font-size: 16px;
-  line-height: 1.7;
-  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.75;
+  color: rgba(210, 218, 230, 0.78);
   letter-spacing: 0.01em;
   text-wrap: pretty;
   padding-bottom: 4px;
@@ -164,27 +146,33 @@ watch(
   opacity: 1;
 }
 
+.quote-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 8px;
+}
+
 .translate-btn {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 12px 24px;
+  padding: 10px 20px;
   border-radius: 999px;
-  background: var(--accent-soft);
-  border: none;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.14);
   cursor: pointer;
   font-family: var(--font-body);
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--accent);
-  letter-spacing: 0.02em;
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.85);
+  letter-spacing: 0.04em;
   transition:
-    background 0.2s,
-    transform 0.2s;
+    background 0.25s cubic-bezier(0.32, 0.72, 0, 1),
+    transform 0.2s cubic-bezier(0.32, 0.72, 0, 1);
 }
 
 .translate-btn:hover {
-  background: oklch(56% 0.12 170 / 0.14);
+  background: rgba(255, 255, 255, 0.1);
 }
 
 .translate-btn:active {
@@ -198,18 +186,12 @@ watch(
 }
 
 .translate-btn.open svg {
-  transform: rotate(180deg);
+  transform: rotate(-90deg);
 }
 
 @media (max-width: 720px) {
   .quote-card {
-    padding: 40px 28px;
-  }
-
-  .quote-mark {
-    top: 24px;
-    left: 20px;
-    font-size: 80px;
+    padding: 32px 24px 28px;
   }
 }
 </style>

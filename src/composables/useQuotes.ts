@@ -19,7 +19,7 @@ const currentQuote = computed<Quote | null>(() => {
 })
 
 const hasTodaySentences = computed(() => todaySentences.value.length > 0)
-const canPrevQuote = computed(() => todaySentences.value.length > 1)
+const canSwitchQuote = computed(() => todaySentences.value.length > 1)
 
 function applyTodayQuotes(quotes: Quote[]): void {
   todaySentences.value = quotes
@@ -72,6 +72,11 @@ function prevQuote(): void {
   todayIdx.value = (todayIdx.value - 1 + todaySentences.value.length) % todaySentences.value.length
 }
 
+function nextQuote(): void {
+  if (todaySentences.value.length <= 1) return
+  todayIdx.value = (todayIdx.value + 1) % todaySentences.value.length
+}
+
 export function useQuotes() {
   return {
     todayIdx,
@@ -82,10 +87,11 @@ export function useQuotes() {
     syncing,
     error,
     hasTodaySentences,
-    canPrevQuote,
+    canSwitchQuote,
     loadToday,
     syncTodaySentences,
     loadHistory,
     prevQuote,
+    nextQuote,
   }
 }

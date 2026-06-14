@@ -1,12 +1,20 @@
 :root {
-  --bg: oklch(98% 0.004 240);
-  --surface: oklch(100% 0 0);
-  --fg: oklch(20% 0.02 240);
-  --muted: oklch(50% 0.018 240);
-  --border: oklch(90% 0.006 240);
-  --accent: oklch(56% 0.12 170);
-  --accent-soft: oklch(56% 0.12 170 / 0.08);
-  --accent-glow: oklch(56% 0.12 170 / 0.18);
+  --bg: #030508;
+  --surface: rgba(12, 16, 28, 0.72);
+  --surface-solid: #0c101c;
+  --fg: #e8ecf4;
+  --muted: rgba(180, 190, 210, 0.72);
+  --border: rgba(255, 255, 255, 0.08);
+  --accent: #d4c4a8;
+  --accent-soft: rgba(212, 196, 168, 0.12);
+  --accent-glow: rgba(212, 196, 168, 0.28);
+
+  --space-deep: #030508;
+  --space-mid: #0a0e18;
+  --star-dim: rgba(255, 255, 255, 0.35);
+  --star-bright: rgba(255, 255, 255, 0.92);
+  --nebula: radial-gradient(ellipse 80% 60% at 70% 20%, rgba(40, 60, 120, 0.18), transparent 60%),
+    radial-gradient(ellipse 60% 50% at 20% 80%, rgba(80, 40, 100, 0.1), transparent 55%);
 
   --font-display: 'Georgia', 'Iowan Old Style', 'Times New Roman', serif;
   --font-body: -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, sans-serif;
@@ -15,4 +23,12 @@
   --radius-md: 16px;
   --radius-lg: 24px;
   --radius-xl: 32px;
+
+  --glass-bg: rgba(8, 12, 22, 0.55);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --glass-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+
+  --z-canvas: 0;
+  --z-content: 1;
+  --z-nav: 100;
 }

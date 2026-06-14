@@ -1,11 +1,15 @@
 import type { AppModule } from '../types/app'
 
+/**
+ * 首页星环模块列表 — 新增模块只需在此追加条目，
+ * 轮播会自动按 appModules.length 均分椭圆轨道。
+ */
 export const appModules: AppModule[] = [
   {
     id: 'dailyQuote',
     title: '每日短句精选',
-    description: '每日推荐一句精选英语短句，提供中文翻译，支持浏览历史日推。为日常自我提升而设计。',
-    icon: 'book',
+    description: '在浩瀚宇宙中，发现一句话的力量，点亮你的每一天。',
+    planetId: 'saturn',
     status: 'active',
     route: '/daily-quote',
   },
@@ -13,21 +17,21 @@ export const appModules: AppModule[] = [
     id: 'notes',
     title: '笔记',
     description: '快速记录灵感和想法，支持 Markdown 编辑与标签分类。',
-    icon: 'note',
+    planetId: 'mars',
     status: 'comingSoon',
   },
   {
     id: 'focusTimer',
     title: '专注计时',
     description: '番茄钟与深度工作计时器，追踪每日专注时长。',
-    icon: 'clock',
+    planetId: 'jupiter',
     status: 'comingSoon',
   },
   {
     id: 'dailyReflection',
     title: '每日反思',
     description: '引导式每日复盘，记录感恩、收获与改进方向。',
-    icon: 'reflection',
+    planetId: 'neptune',
     status: 'comingSoon',
   },
 ]

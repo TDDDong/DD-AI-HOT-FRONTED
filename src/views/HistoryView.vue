@@ -23,6 +23,9 @@ const { historyItems, loading, error } = useQuotes()
 
 <style scoped>
 .history-view {
+  width: 100%;
+  max-width: 820px;
+  margin: 0 auto;
   padding: 20px 0;
 }
 

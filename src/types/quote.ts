@@ -7,5 +7,5 @@ export interface Quote {
 export interface HistoryQuoteItem {
   date: Date
   isToday: boolean
-  quote: Quote | null
+  quotes: Quote[]
 }

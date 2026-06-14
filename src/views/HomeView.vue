@@ -1,63 +1,103 @@
 <script setup lang="ts">
-import ModuleCard from '../components/ModuleCard.vue'
-import { appModules } from '../data/appModules'
+import { RouterLink } from 'vue-router'
+import PlanetRingCarousel from '../components/cosmic/PlanetRingCarousel.vue'
 </script>
 
 <template>
-  <div class="page-shell home-view">
-    <header class="page-header">
-      <h1>DARVIS</h1>
-      <p>你的个人 AI 助理。选择一个模块开始使用，更多模块即将上线。</p>
+  <div class="cosmic-home">
+    <div class="cosmic-home-bg" aria-hidden="true" />
+
+    <header class="cosmic-topbar">
+      <RouterLink class="brand" :to="{ name: 'home' }">
+        <span class="brand-name">DARVIS</span>
+        <span class="brand-sub">个人智能助手</span>
+      </RouterLink>
+      <button class="menu-btn" type="button" aria-label="菜单">
+        <span />
+        <span />
+        <span />
+      </button>
     </header>
 
-    <div class="section-title">可用模块</div>
-    <div class="module-grid">
-      <ModuleCard v-for="module in appModules" :key="module.id" :module="module" />
-    </div>
+    <PlanetRingCarousel />
   </div>
 </template>
 
 <style scoped>
-.home-view {
+.cosmic-home {
+  position: relative;
+  min-height: 100dvh;
   width: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
-.page-header {
-  margin-bottom: 40px;
+.cosmic-home-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 40%, rgba(8, 14, 28, 0.15), rgba(3, 5, 8, 0.72)),
+    url('/assets/home-starfield-bg.png') center / cover no-repeat;
+  background-color: #030508;
 }
 
-.page-header h1 {
-  font-size: 28px;
+.cosmic-topbar {
+  position: relative;
+  z-index: var(--z-content);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 28px 40px 0;
+}
+
+.brand {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  text-decoration: none;
+  color: inherit;
+}
+
+.brand-name {
+  font-size: 22px;
   font-weight: 700;
-  letter-spacing: -0.02em;
-  margin-bottom: 6px;
+  letter-spacing: 0.14em;
+  color: #fff;
 }
 
-.page-header p {
-  font-size: 15px;
-  color: var(--muted);
-  line-height: 1.5;
-}
-
-.section-title {
+.brand-sub {
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 400;
+  color: rgba(210, 218, 230, 0.65);
   letter-spacing: 0.06em;
-  color: var(--muted);
-  text-transform: uppercase;
-  margin-bottom: 16px;
 }
 
-.module-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 20px;
-  margin-bottom: 48px;
+.menu-btn {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 8px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.menu-btn span {
+  display: block;
+  width: 22px;
+  height: 1.5px;
+  background: rgba(255, 255, 255, 0.75);
 }
 
 @media (max-width: 860px) {
-  .module-grid {
-    grid-template-columns: 1fr;
+  .cosmic-topbar {
+    padding: 20px 20px 0;
+  }
+
+  .brand-sub {
+    display: none;
   }
 }
 </style>

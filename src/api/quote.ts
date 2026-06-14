@@ -19,9 +19,6 @@ export function mapDailyToQuotes(dto: DailyHotSentencesDto): Quote[] {
   return quotes
 }
 
-export function pickFirstQuote(dto: DailyHotSentencesDto): Quote | null {
-  return mapDailyToQuotes(dto)[0] ?? null
-}
 
 /** 仅查询 UTC 当天已有例句，不触发入库 */
 export async function fetchTodaySentences(): Promise<Quote[]> {
@@ -44,7 +41,7 @@ export async function fetchHistoryQuotes(days: number): Promise<HistoryQuoteItem
     return {
       date: parseApiDate(dto.date),
       isToday: offset === 0,
-      quote: pickFirstQuote(dto),
+      quotes: mapDailyToQuotes(dto),
     }
   })
 

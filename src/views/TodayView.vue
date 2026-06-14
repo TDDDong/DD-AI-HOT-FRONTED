@@ -11,12 +11,14 @@ const emit = defineEmits<{
 const {
   todayIdx,
   currentQuote,
+  todaySentences,
   loading,
   syncing,
   error,
   hasTodaySentences,
-  canPrevQuote,
+  canSwitchQuote,
   prevQuote,
+  nextQuote,
   syncTodaySentences,
 } = useQuotes()
 
@@ -30,7 +32,7 @@ const todayDate = computed(() => formatDate(new Date()))
     <p v-if="loading" class="status-text">加载今日例句…</p>
     <p v-else-if="error && !hasTodaySentences" class="status-text error">{{ error }}</p>
 
-    <div v-else-if="!hasTodaySentences" class="empty-card">
+    <div v-else-if="!hasTodaySentences" class="empty-card glass-panel">
       <p class="empty-title">今日暂无短句</p>
       <p class="empty-desc">点击下方按钮获取今日英语短句，每天只需获取一次</p>
       <button
@@ -46,45 +48,73 @@ const todayDate = computed(() => formatDate(new Date()))
 
     <QuoteCard v-else :quote="currentQuote!" :pulse-key="todayIdx" />
 
-    <div v-if="hasTodaySentences && !loading" class="today-actions">
-      <button
-        class="action-btn"
-        aria-label="上一条"
-        :disabled="!canPrevQuote"
-        @click="prevQuote"
-      >
-        <svg
-          width="16"
-          height="16"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
+    <div v-if="hasTodaySentences && !loading" class="today-footer">
+      <p v-if="canSwitchQuote" class="quote-index">{{ todayIdx + 1 }} / {{ todaySentences.length }}</p>
+
+      <div class="today-actions">
+        <button
+          v-if="canSwitchQuote"
+          class="action-btn"
+          type="button"
+          aria-label="上一条"
+          @click="prevQuote"
         >
-          <polyline points="15 18 9 12 15 6" />
-        </svg>
-        上一条
-      </button>
-      <button class="action-btn primary" @click="emit('goHistory')">
-        <svg
-          width="16"
-          height="16"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <polyline points="15 18 9 12 15 6" />
+          </svg>
+          上一条
+        </button>
+
+        <button class="action-btn primary" type="button" @click="emit('goHistory')">
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <rect x="3" y="3" width="7" height="7" />
+            <rect x="14" y="3" width="7" height="7" />
+            <rect x="3" y="14" width="7" height="7" />
+            <rect x="14" y="14" width="7" height="7" />
+          </svg>
+          浏览历史日推
+        </button>
+
+        <button
+          v-if="canSwitchQuote"
+          class="action-btn"
+          type="button"
+          aria-label="下一条"
+          @click="nextQuote"
         >
-          <rect x="3" y="3" width="7" height="7" />
-          <rect x="14" y="3" width="7" height="7" />
-          <rect x="3" y="14" width="7" height="7" />
-          <rect x="14" y="14" width="7" height="7" />
-        </svg>
-        浏览历史日推
-      </button>
+          下一条
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <polyline points="9 18 15 12 9 6" />
+          </svg>
+        </button>
+      </div>
     </div>
   </div>
 </template>
@@ -92,19 +122,15 @@ const todayDate = computed(() => formatDate(new Date()))
 <style scoped>
 .today-view {
   align-items: center;
-  justify-content: center;
-  padding: 40px 0;
+  justify-content: flex-end;
+  padding: 0 0 8vh;
+  min-height: 52dvh;
   display: flex;
   flex-direction: column;
 }
 
 .today-date {
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--accent);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  margin-bottom: 32px;
+  display: none;
 }
 
 .status-text {
@@ -120,13 +146,9 @@ const todayDate = computed(() => formatDate(new Date()))
 .empty-card {
   width: 100%;
   max-width: 720px;
-  background: var(--surface);
   border-radius: var(--radius-xl);
   padding: 56px 64px;
   text-align: center;
-  box-shadow:
-    0 4px 32px oklch(0 0 0 / 0.05),
-    0 1px 2px oklch(0 0 0 / 0.03);
 }
 
 .empty-title {
@@ -150,14 +172,14 @@ const todayDate = computed(() => formatDate(new Date()))
   border: none;
   border-radius: 999px;
   background: var(--accent);
-  color: #fff;
+  color: #0a0e18;
   cursor: pointer;
   font-family: var(--font-body);
   font-size: 14px;
   font-weight: 600;
   letter-spacing: 0.02em;
-  box-shadow: 0 2px 14px var(--accent-glow);
-  transition: all 0.2s;
+  box-shadow: 0 2px 20px var(--accent-glow);
+  transition: all 0.25s cubic-bezier(0.32, 0.72, 0, 1);
 }
 
 .fetch-btn:hover:not(:disabled) {
@@ -179,11 +201,28 @@ const todayDate = computed(() => formatDate(new Date()))
   color: oklch(55% 0.15 25);
 }
 
+.today-footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  margin-top: 28px;
+  gap: 14px;
+}
+
+.quote-index {
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(210, 218, 230, 0.65);
+  letter-spacing: 0.06em;
+}
+
 .today-actions {
   display: flex;
   align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
   gap: 12px;
-  margin-top: 28px;
 }
 
 .action-btn {
@@ -192,21 +231,20 @@ const todayDate = computed(() => formatDate(new Date()))
   gap: 6px;
   padding: 10px 20px;
   border-radius: 999px;
-  background: var(--surface);
+  background: rgba(255, 255, 255, 0.04);
   border: 1px solid var(--border);
   cursor: pointer;
   font-family: var(--font-body);
   font-size: 13px;
   font-weight: 500;
   color: var(--muted);
-  box-shadow: 0 1px 3px oklch(0 0 0 / 0.03);
-  transition: all 0.2s;
+  transition: all 0.25s cubic-bezier(0.32, 0.72, 0, 1);
   text-decoration: none;
 }
 
 .action-btn:hover:not(:disabled) {
   color: var(--fg);
-  border-color: oklch(80% 0.008 240);
+  border-color: rgba(255, 255, 255, 0.15);
 }
 
 .action-btn:active:not(:disabled) {
@@ -220,10 +258,10 @@ const todayDate = computed(() => formatDate(new Date()))
 
 .action-btn.primary {
   background: var(--accent);
-  color: #fff;
+  color: #0a0e18;
   border: none;
   font-weight: 600;
-  box-shadow: 0 2px 14px var(--accent-glow);
+  box-shadow: 0 2px 20px var(--accent-glow);
 }
 
 .action-btn.primary:hover {
@@ -233,6 +271,15 @@ const todayDate = computed(() => formatDate(new Date()))
 @media (max-width: 720px) {
   .empty-card {
     padding: 40px 28px;
+  }
+
+  .today-actions {
+    gap: 8px;
+  }
+
+  .action-btn {
+    padding: 10px 16px;
+    font-size: 12px;
   }
 }
 </style>

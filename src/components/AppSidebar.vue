@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import ModuleIcon from './ModuleIcon.vue'
+import PhotoPlanet from './cosmic/PhotoPlanet.vue'
 import { availableModules } from '../data/appModules'
+import { getPlanetTheme } from '../data/planetThemes'
 import type { AppModule } from '../types/app'
 
 const route = useRoute()
@@ -24,7 +25,7 @@ function navigateModule(module: AppModule): void {
 <template>
   <aside class="sidebar">
     <button class="sidebar-brand" type="button" @click="navigateHome">
-      <span class="sidebar-dot"></span>
+      <span class="sidebar-dot" />
       DARVIS
     </button>
 
@@ -35,26 +36,27 @@ function navigateModule(module: AppModule): void {
         type="button"
         @click="navigateHome"
       >
-        <span class="nav-icon">
-          <ModuleIcon name="dashboard" />
-        </span>
-        DARVIS
+        星图首页
       </button>
 
-      <div class="sidebar-section">模块</div>
+      <div class="sidebar-section">行星模块</div>
 
       <button
         v-for="module in availableModules"
         :key="module.id"
-        class="sidebar-link"
+        class="sidebar-link module-link"
         :class="{ active: activeRouteName === module.id }"
         type="button"
         @click="navigateModule(module)"
       >
-        <span class="nav-icon">
-          <ModuleIcon :name="module.icon" />
+        <PhotoPlanet
+          :planet-id="module.planetId"
+          :size="28"
+        />
+        <span class="link-text">
+          <span class="link-planet">{{ getPlanetTheme(module.planetId).nameZh }}</span>
+          {{ module.title }}
         </span>
-        {{ module.title }}
       </button>
     </nav>
 
@@ -70,16 +72,19 @@ function navigateModule(module: AppModule): void {
 <style scoped>
 .sidebar {
   width: 260px;
-  min-height: 100vh;
+  min-height: 100dvh;
   flex-shrink: 0;
-  background: var(--surface);
+  background: rgba(8, 12, 22, 0.75);
   border-right: 1px solid var(--border);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   display: flex;
   flex-direction: column;
   padding: 32px 20px;
   position: sticky;
   top: 0;
-  height: 100vh;
+  height: 100dvh;
+  z-index: var(--z-nav);
 }
 
 .sidebar-brand {
@@ -87,9 +92,10 @@ function navigateModule(module: AppModule): void {
   align-items: center;
   gap: 10px;
   margin-bottom: 40px;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 700;
-  letter-spacing: -0.01em;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
   color: var(--fg);
   background: none;
   border: none;
@@ -99,11 +105,11 @@ function navigateModule(module: AppModule): void {
 }
 
 .sidebar-dot {
-  width: 10px;
-  height: 10px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
   background: var(--accent);
-  box-shadow: 0 0 12px var(--accent-glow);
+  box-shadow: 0 0 14px var(--accent-glow);
   flex-shrink: 0;
 }
 
@@ -130,7 +136,7 @@ function navigateModule(module: AppModule): void {
   font-weight: 500;
   letter-spacing: 0.01em;
   text-align: left;
-  transition: all 0.2s cubic-bezier(0.22, 0.61, 0.36, 1);
+  transition: all 0.25s cubic-bezier(0.32, 0.72, 0, 1);
 }
 
 .sidebar-link:hover {
@@ -144,17 +150,22 @@ function navigateModule(module: AppModule): void {
   font-weight: 600;
 }
 
-.nav-icon {
-  width: 20px;
-  height: 20px;
-  flex-shrink: 0;
-  display: grid;
-  place-items: center;
+.module-link {
+  padding: 10px 12px;
 }
 
-.nav-icon :deep(svg) {
-  width: 18px;
-  height: 18px;
+.link-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  line-height: 1.3;
+}
+
+.link-planet {
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  opacity: 0.7;
 }
 
 .sidebar-section {
@@ -162,7 +173,7 @@ function navigateModule(module: AppModule): void {
   color: var(--muted);
   font-size: 11px;
   font-weight: 600;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
@@ -184,8 +195,8 @@ function navigateModule(module: AppModule): void {
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: linear-gradient(135deg, var(--accent), oklch(68% 0.12 140));
-  color: #fff;
+  background: linear-gradient(135deg, var(--accent), rgba(255, 255, 255, 0.15));
+  color: #0a0e18;
   display: grid;
   font-size: 14px;
   font-weight: 700;
