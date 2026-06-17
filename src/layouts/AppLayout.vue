@@ -3,17 +3,26 @@ import { computed, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import AppSidebar from '../components/AppSidebar.vue'
 import { getPlanetTheme } from '../data/planetThemes'
+import type { AppRouteName } from '../types/app'
+import type { PlanetId } from '../data/planetThemes'
+
+const PLANET_MODULES: Partial<Record<AppRouteName, PlanetId>> = {
+  dailyQuote: 'saturn',
+  aiHotNews: 'jupiter',
+}
 
 const route = useRoute()
 
 const isHome = computed(() => route.name === 'home')
-const isQuoteModule = computed(() => route.name === 'dailyQuote')
+const isPlanetModule = computed(() => {
+  const name = route.name as AppRouteName
+  return name in PLANET_MODULES
+})
 
 const planetTheme = computed(() => {
-  if (route.name === 'dailyQuote') {
-    return getPlanetTheme('saturn')
-  }
-  return null
+  const name = route.name as AppRouteName
+  const planetId = PLANET_MODULES[name]
+  return planetId ? getPlanetTheme(planetId) : null
 })
 
 watch(
@@ -35,9 +44,9 @@ watch(
 </script>
 
 <template>
-  <div class="app" :class="{ 'app-immersive': isHome || isQuoteModule, 'app-planet': isQuoteModule }">
-    <AppSidebar v-if="!isHome && !isQuoteModule" />
-    <main class="app-main" :class="{ 'quote-module': isQuoteModule, 'home-main': isHome }">
+  <div class="app" :class="{ 'app-immersive': isHome || isPlanetModule, 'app-planet': isPlanetModule }">
+    <AppSidebar v-if="!isHome && !isPlanetModule" />
+    <main class="app-main" :class="{ 'quote-module': isPlanetModule, 'home-main': isHome }">
       <router-view />
     </main>
   </div>

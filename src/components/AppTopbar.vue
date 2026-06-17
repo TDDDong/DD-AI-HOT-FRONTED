@@ -10,6 +10,10 @@ defineProps<{
 
   planetName?: string
 
+  todayLabel?: string
+
+  historyLabel?: string
+
 }>()
 
 
@@ -52,7 +56,7 @@ const emit = defineEmits<{
 
         >
 
-          今日推荐
+          {{ todayLabel ?? '今日推荐' }}
 
         </button>
 
@@ -66,7 +70,7 @@ const emit = defineEmits<{
 
         >
 
-          历史日推
+          {{ historyLabel ?? '历史日推' }}
 
         </button>
 
@@ -232,7 +236,7 @@ const emit = defineEmits<{
 
   color: #fff;
 
-  border-bottom-color: #c4885a;
+  border-bottom-color: var(--accent);
 
 }
 
@@ -284,7 +288,7 @@ const emit = defineEmits<{
 
   border-radius: 50%;
 
-  background: linear-gradient(135deg, #c4885a, #8a6848);
+  background: linear-gradient(135deg, var(--accent), color-mix(in srgb, var(--accent) 65%, #0a0e18));
 
   color: #0a0e18;
 

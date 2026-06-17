@@ -14,6 +14,14 @@ export const appModules: AppModule[] = [
     route: '/daily-quote',
   },
   {
+    id: 'aiHotNews',
+    title: 'AI 热点新闻',
+    description: '每日 AI 行业热点摘要，纵览前沿动态与技术风向标。',
+    planetId: 'jupiter',
+    status: 'active',
+    route: '/ai-hot-news',
+  },
+  {
     id: 'notes',
     title: '笔记',
     description: '快速记录灵感和想法，支持 Markdown 编辑与标签分类。',
@@ -24,7 +32,7 @@ export const appModules: AppModule[] = [
     id: 'focusTimer',
     title: '专注计时',
     description: '番茄钟与深度工作计时器，追踪每日专注时长。',
-    planetId: 'jupiter',
+    planetId: 'mars',
     status: 'comingSoon',
   },
   {

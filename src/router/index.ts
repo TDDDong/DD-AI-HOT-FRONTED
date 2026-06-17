@@ -18,6 +18,11 @@ const router = createRouter({
           name: 'dailyQuote',
           component: () => import('../views/DailyQuoteView.vue'),
         },
+        {
+          path: 'ai-hot-news',
+          name: 'aiHotNews',
+          component: () => import('../views/AiHotNewsView.vue'),
+        },
       ],
     },
     {
