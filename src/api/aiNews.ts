@@ -1,5 +1,5 @@
 import { request } from './index'
-import type { AiNewsArticle, AiNewsDaily } from '../types/aiNews'
+import type { AiNewsArticle, AiNewsDaily, FetchAiNewsResult } from '../types/aiNews'
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? ''
 
@@ -40,4 +40,12 @@ export function listAiNewsArticles(params?: {
   if (params?.limit) qs.set('limit', String(params.limit))
   const query = qs.toString()
   return request<AiNewsArticle[]>(`/api/v1/ai-news/listAll${query ? `?${query}` : ''}`)
+}
+
+/** 从 aibase 抓取今日 AI 日报并落库 */
+export function fetchAndPersistAiNews(date?: string): Promise<FetchAiNewsResult> {
+  const query = date ? `?date=${encodeURIComponent(date)}` : ''
+  return request<FetchAiNewsResult>(`/api/v1/obsidian/ai-news/fetch-and-persist${query}`, {
+    method: 'POST',
+  })
 }

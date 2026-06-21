@@ -1,5 +1,5 @@
 import { formatUtcDate, parseApiDate, utcDateDaysAgo } from '../composables/useDate'
-import { getDailyAiNews, getDailyAiNewsSafe } from './aiNews'
+import { fetchAndPersistAiNews, getDailyAiNews, getDailyAiNewsSafe } from './aiNews'
 import type { AiNewsDaily, HistoryNewsDayItem } from '../types/aiNews'
 
 export async function fetchTodayDaily(): Promise<AiNewsDaily | null> {
@@ -8,6 +8,12 @@ export async function fetchTodayDaily(): Promise<AiNewsDaily | null> {
   } catch {
     return null
   }
+}
+
+/** 抓取落库后，再查询当天日报 */
+export async function fetchTodayAfterPersist(): Promise<AiNewsDaily | null> {
+  await fetchAndPersistAiNews()
+  return fetchTodayDaily()
 }
 
 export async function fetchHistoryDaily(days: number): Promise<HistoryNewsDayItem[]> {

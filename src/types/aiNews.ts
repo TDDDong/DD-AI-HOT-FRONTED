@@ -28,3 +28,12 @@ export interface HistoryNewsDayItem {
   dailyPageUrl: string | null
   articles: AiNewsArticle[]
 }
+
+export interface FetchAiNewsResult {
+  reportDate: string
+  digestId: number
+  insertedArticles: number
+  updatedArticles: number
+  skippedArticles: number
+  totalArticles: number
+}

@@ -1,11 +1,12 @@
 import { computed, ref } from 'vue'
-import { fetchHistoryDaily, fetchTodayDaily } from '../api/aiNewsService'
+import { fetchHistoryDaily, fetchTodayAfterPersist, fetchTodayDaily } from '../api/aiNewsService'
 import type { AiNewsArticle, AiNewsDaily, HistoryNewsDayItem } from '../types/aiNews'
 
 const todayDaily = ref<AiNewsDaily | null>(null)
 const historyItems = ref<HistoryNewsDayItem[]>([])
 const articleIdx = ref(0)
 const loading = ref(false)
+const syncing = ref(false)
 const error = ref<string | null>(null)
 
 const todayArticles = computed(() => todayDaily.value?.articles ?? [])
@@ -34,6 +35,19 @@ async function loadToday(): Promise<void> {
     applyTodayDaily(null)
   } finally {
     loading.value = false
+  }
+}
+
+async function syncTodayAiNews(): Promise<void> {
+  syncing.value = true
+  error.value = null
+
+  try {
+    applyTodayDaily(await fetchTodayAfterPersist())
+  } catch (e) {
+    error.value = e instanceof Error ? e.message : '获取失败'
+  } finally {
+    syncing.value = false
   }
 }
 
@@ -69,10 +83,12 @@ export function useAiNews() {
     historyItems,
     articleIdx,
     loading,
+    syncing,
     error,
     hasTodayArticles,
     canSwitchArticle,
     loadToday,
+    syncTodayAiNews,
     loadHistory,
     prevArticle,
     nextArticle,

@@ -14,11 +14,13 @@ const {
   todayDaily,
   todayArticles,
   loading,
+  syncing,
   error,
   hasTodayArticles,
   canSwitchArticle,
   prevArticle,
   nextArticle,
+  syncTodayAiNews,
 } = useAiNews()
 
 const todayDate = computed(() => formatDate(new Date()))
@@ -29,16 +31,24 @@ const todayDate = computed(() => formatDate(new Date()))
     <div class="today-date">{{ todayDate }}</div>
 
     <p v-if="loading" class="status-text">加载今日热点…</p>
-    <p v-else-if="error && !hasTodayArticles" class="status-text error">{{ error }}</p>
 
     <div v-else-if="!hasTodayArticles" class="empty-card glass-panel">
       <p class="empty-title">今日暂无热点</p>
-      <p class="empty-desc">
-        后端尚未同步今日 AI 日报，可浏览历史热点或等待数据更新
-      </p>
-      <button class="history-btn" type="button" @click="emit('goHistory')">
-        浏览历史热点
-      </button>
+      <p class="empty-desc">点击下方按钮从 aibase 获取今日 AI 热点，每天只需获取一次</p>
+      <div class="empty-actions">
+        <button
+          class="fetch-btn"
+          type="button"
+          :disabled="syncing"
+          @click="syncTodayAiNews"
+        >
+          {{ syncing ? '正在获取…' : '获取今日热点' }}
+        </button>
+        <button class="history-btn" type="button" @click="emit('goHistory')">
+          浏览历史热点
+        </button>
+      </div>
+      <p v-if="error" class="fetch-error">{{ error }}</p>
     </div>
 
     <template v-else>
@@ -181,10 +191,20 @@ const todayDate = computed(() => formatDate(new Date()))
   line-height: 1.6;
 }
 
-.history-btn {
+.empty-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+
+.fetch-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  width: 100%;
+  max-width: 240px;
   padding: 12px 28px;
   border: none;
   border-radius: 999px;
@@ -199,12 +219,51 @@ const todayDate = computed(() => formatDate(new Date()))
   transition: all 0.25s cubic-bezier(0.32, 0.72, 0, 1);
 }
 
-.history-btn:hover {
+.fetch-btn:hover:not(:disabled) {
   box-shadow: 0 4px 22px var(--accent-glow);
+}
+
+.fetch-btn:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.fetch-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.history-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 240px;
+  padding: 10px 28px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--muted);
+  letter-spacing: 0.02em;
+  transition: all 0.25s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.history-btn:hover {
+  color: var(--fg);
+  border-color: rgba(255, 255, 255, 0.15);
 }
 
 .history-btn:active {
   transform: scale(0.97);
+}
+
+.fetch-error {
+  margin-top: 16px;
+  font-size: 13px;
+  color: oklch(55% 0.15 25);
 }
 
 .today-footer {
