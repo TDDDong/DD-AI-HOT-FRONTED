@@ -1,8 +1,8 @@
 import type { PlanetId } from '../data/planetThemes'
 
-export type AppRouteName = 'home' | 'dailyQuote' | 'aiHotNews'
+export type AppRouteName = 'home' | 'dailyQuote' | 'aiHotNews' | 'twitterFeed' | 'twitterAuthor'
 
-export type AppModuleId = 'dailyQuote' | 'aiHotNews' | 'notes' | 'focusTimer' | 'dailyReflection'
+export type AppModuleId = 'dailyQuote' | 'aiHotNews' | 'twitterFeed' | 'notes' | 'focusTimer' | 'dailyReflection'
 
 export interface AppModule {
   id: AppModuleId

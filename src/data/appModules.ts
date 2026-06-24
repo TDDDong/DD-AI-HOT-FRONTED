@@ -22,6 +22,14 @@ export const appModules: AppModule[] = [
     route: '/ai-hot-news',
   },
   {
+    id: 'twitterFeed',
+    title: 'Twitter 星空',
+    description: '追踪感兴趣的 Twitter 博主，在猎户与天狼之间阅读他们的推文。',
+    planetId: 'neptune',
+    status: 'active',
+    route: '/twitter-feed',
+  },
+  {
     id: 'notes',
     title: '笔记',
     description: '快速记录灵感和想法，支持 Markdown 编辑与标签分类。',

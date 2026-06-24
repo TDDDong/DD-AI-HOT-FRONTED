@@ -9,6 +9,8 @@ import type { PlanetId } from '../data/planetThemes'
 const PLANET_MODULES: Partial<Record<AppRouteName, PlanetId>> = {
   dailyQuote: 'saturn',
   aiHotNews: 'jupiter',
+  twitterFeed: 'neptune',
+  twitterAuthor: 'neptune',
 }
 
 const route = useRoute()

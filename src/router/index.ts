@@ -1,6 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import AppLayout from '../layouts/AppLayout.vue'
-
+import TwitterFeedView from '../views/TwitterFeedView.vue'
+import TwitterFollowingView from '../views/TwitterFollowingView.vue'
+import TwitterAuthorDetailView from '../views/TwitterAuthorDetailView.vue'
+import { resolveTwitterAuthorSeed } from '../composables/twitterAuthorSeed'
 const router = createRouter({
   history: createWebHistory(),
   routes: [
@@ -22,6 +25,28 @@ const router = createRouter({
           path: 'ai-hot-news',
           name: 'aiHotNews',
           component: () => import('../views/AiHotNewsView.vue'),
+        },
+        {
+          path: 'twitter-feed',
+          component: TwitterFeedView,
+          children: [
+            {
+              path: '',
+              name: 'twitterFeed',
+              component: TwitterFollowingView,
+            },
+            {
+              path: ':handle',
+              name: 'twitterAuthor',
+              component: TwitterAuthorDetailView,
+              props: (route) => {
+                const handle = String(route.params.handle).replace(/^@/, '')
+                return {
+                  handle,
+                  seedAuthor: resolveTwitterAuthorSeed(handle),
+                }
+              },
+            },          ],
         },
       ],
     },
